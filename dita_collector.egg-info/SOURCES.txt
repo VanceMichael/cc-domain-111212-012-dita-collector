@@ -1,0 +1,16 @@
+README.md
+app.py
+collector.py
+pyproject.toml
+sampledata.py
+scenario.py
+source.py
+storage.py
+transport.py
+dita_collector.egg-info/PKG-INFO
+dita_collector.egg-info/SOURCES.txt
+dita_collector.egg-info/dependency_links.txt
+dita_collector.egg-info/top_level.txt
+tests/test_collector.py
+tests/test_scenario.py
+tests/test_source.py

@@ -1,6 +1,6 @@
 # 来源格式与业务语义
 
-来源限定 DITA 常用 XML 子集，不加载外部 DTD。支持 map/topic、topicref/mapref、keyscope、keys/keyref、conref 的 topic/element 路径与 product/platform/audience 条件。嵌套 keyscope 按从近到远查找，分支 processing-role 继承。仅处理登记在本地包的资源；上下文身份为根 map、条件配置、展开路径。段落来源与出现位置分别保存，不要求完整 DITA-OT 排版。
+来源限定 DITA 常用 XML 子集，不加载外部 DTD。支持 map/topic、topicref/mapref、keyscope、keys/keyref、conref 的 topic/element 路径与 product/platform/audience 条件。嵌套 keyscope 按从近到远查找，分支 processing-role 继承。仅处理登记在本地包的资源；上下文身份为根 map、条件配置、展开路径。段落来源与出现位置分别保存，不要求完整 DITA-OT 排版。上述语义已在 `collector.py` 落地，诊断码与边界见 `docs/collection-view.md`。
 
 本地演练夹具由 `sampledata.py` 生成，均为虚构业务数据。`sample` 是当前可查看输入，`invalid` 是边界失败输入，其余用于对照来源变体。生成不会下载资源。
 

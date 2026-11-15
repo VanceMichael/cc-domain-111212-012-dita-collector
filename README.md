@@ -7,6 +7,8 @@
 `source.py` 查看来源的现有结构，不把检查结果冒充完整业务采集。
 `storage.py` 将原始字节、来源标识、摘要和检查结果一起保存在本地 SQLite，重复原件保留同一收件编号。
 `sampledata.py` 构造可重复的本地数据；`transport.py` 提供独立的回环 HTTP 演练源与请求记录。
+`collector.py` 按根 map 与产品条件构建上下文感知采集视图，处理 map 引用、keyscope、keyref 与限定 conref 范围，
+支持 resource-only 资源库、诊断保留、段落来源链/出现位置溯源与改动影响面查询，语义见 `docs/collection-view.md`。
 解释范围和来源变体见 `docs/source-contract.md`，当前检查测试与将来新增业务能力的测试应分开保留。
 
 ## 环境
@@ -20,7 +22,7 @@ Python 3.11 或以上，仅标准库，无需凭据和外部数据。使用容�
 
 ```sh
 python3 -m unittest discover -s tests -v
-python3 -m compileall -q app.py source.py sampledata.py storage.py transport.py
+python3 -m compileall -q app.py source.py sampledata.py storage.py transport.py scenario.py collector.py
 python3 -m build --wheel --no-isolation
 ```
 
@@ -28,9 +30,11 @@ python3 -m build --wheel --no-isolation
 
 ```sh
 python3 app.py demo
+python3 app.py viewdemo
 ```
 
 演示真实启动本地来源、领取原件、执行检查并保存临时数据库，展示检查结果与重复收件身份，退出后自动清理。正常在数秒内完成，不以预录日志代替执行。
+`viewdemo` 在内存中用两套虚构产品 map 展示同键异义、条件过滤、resource-only 共享库、共享段落溯源与改动影响面。
 
 ## 单独检查与收件
 
@@ -42,3 +46,17 @@ python3 app.py list --database /tmp/dita-collector.sqlite3
 ```
 
 生成夹具不会覆盖已有文件。运行错误以 JSON 输出到标准错误并返回退出码 2；原始输入无效时不生成成功收件。内部原件与任何对外展示副本应分开管理，不写入真实个人数据。
+
+## 按机型构建采集视图
+
+```sh
+python3 app.py view <DITA 包目录> maps/beta-product.map --set product=beta
+python3 app.py impact <DITA 包目录> topics/common-notes.dita \
+    --view maps/alpha-product.map:product=alpha \
+    --view maps/beta-product.map:product=beta
+python3 app.py provenance <DITA 包目录> topics/common-notes.dita --element safety \
+    --view maps/alpha-product.map:product=alpha
+```
+
+输出为 JSON：视图含按顺序排列的条目与段落、resource-only 资源清单、键解析结果、条件过滤记录与诊断；
+影响面命令区分受影响与不受影响的视图，支持只重采受影响机型。`--view` 缺省时扫描包内全部 map（空条件）。
